@@ -3,14 +3,14 @@ import {initialCards} from  '../components/card.js'
 import {createCard, likeCard, deleteCard} from '../components/cards.js'
 import {cardContainer, profileEditPopup, addCardPopup, profileTitle, profileDescription, formAddCard,
      formEditProfile, imagePopup, imagePopupSource, imagePopupCaption} from '../components/domElements.js'
-import {closeOpenedPopupByEvent, openPopup, closePopup} from '../components/modal.js'
+import {openPopup, closePopup} from '../components/modal.js'
 
 
 const popups = [
     {
         openBtn: document.querySelector('.profile__edit-button'),
         popupWnd: profileEditPopup,
-        callBack: function(){
+        openCallBack: function(){
             formEditProfile.name.value = profileTitle.textContent;
             formEditProfile.description.value = profileDescription.textContent;
         }
@@ -18,7 +18,9 @@ const popups = [
     {
         openBtn: document.querySelector('.profile__add-button'),
         popupWnd: addCardPopup,
-        callBack: function(){
+        openCallBack: function(){
+            //! По замечанию нам надо очищать инпут после успешного ввода, а не при любом клике на +
+            //! По этому тут пусто
         }
     },
 ]
@@ -28,7 +30,7 @@ const forms = [
     {
         form: formEditProfile,
         popupWnd: profileEditPopup,
-        callBack: function(){
+        closeCallBack: function(){
             const nameInput = formEditProfile.name;
             const jobInput = formEditProfile.description;
 
@@ -39,7 +41,7 @@ const forms = [
     {
         form: formAddCard,
         popupWnd: addCardPopup,
-        callBack: function(){
+        closeCallBack: function(){
             const placeName = formAddCard['place-name'].value;
             const link = formAddCard.link.value;
         
@@ -77,6 +79,7 @@ function buildCardInfo(name, link){
 
 // Вывести карточки на страницу
 function initalizeCards(cards) {
+// Контейнер ищем тут, чтобы искать только один раз
     cards.forEach(item => {
         const cardInfo = buildCardInfo(item.name, item.link);
         const cardElement = createCard(cardInfo);
@@ -86,24 +89,35 @@ function initalizeCards(cards) {
 
 //! Инициализация открытия закрытия попапов
 function initPopups(popups){
-    document.addEventListener('click', closeOpenedPopupByEvent);
-    popups.forEach(({openBtn, popupWnd, callBack}) => {
+    popups.forEach(({openBtn, popupWnd, openCallBack}) => {
         openBtn.addEventListener('click', event => {
-            openPopup(popupWnd)
-            callBack();
+            openPopup(popupWnd);
+            openCallBack();
         });
     });
-   
+
+    const allPopups = document.querySelectorAll('.popup');
+    allPopups.forEach((popup) => {
+        popup.addEventListener('mousedown', (evt) => {
+            if (evt.target.classList.contains('popup_is-opened')) {
+                closePopup(popup);
+            }
+            if (evt.target.classList.contains('popup__close')) {
+                closePopup(popup);
+            }
+        })
+    })
 }
 
+//! Обработка ввода данных в форму
 function initForms(forms){
-    forms.forEach(({form, popupWnd, callBack}) => {
+    forms.forEach(({form, popupWnd, closeCallBack}) => {
         form.addEventListener("submit", (evt) => {
           evt.preventDefault();
           closePopup(popupWnd);
-          callBack();
+          closeCallBack();
         });
-      });
+    });
 }
 
 initalizeCards(initialCards);
