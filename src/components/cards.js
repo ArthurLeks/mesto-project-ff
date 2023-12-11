@@ -60,9 +60,8 @@ export function createCard(cardInfo, profileOwner) {
     buttonDelete.addEventListener('click', () =>
       cardInfo.deleteCard(cardInfo.card._id, cardElement)
     );
-  } else {
-    buttonDelete.classList.add('card__delete-button_is-hidden');
-  }
+  } 
+  
   const buttonLike = cardElement.querySelector('.card__like-button');
   buttonLike.addEventListener('click', () =>
     cardInfo.likeCard(cardInfo.card._id, buttonLike)
@@ -80,4 +79,3 @@ export function createCard(cardInfo, profileOwner) {
 
   return cardElement;
 }
-

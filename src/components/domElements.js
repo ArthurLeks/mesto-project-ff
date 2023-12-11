@@ -1,4 +1,3 @@
-
 export const formEditProfile = document.forms['edit-profile'];
 export const formAddCard = document.forms['new-place'];
 export const formEditAvatar = document.forms['edit-avatar'];
