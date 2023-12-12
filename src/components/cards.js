@@ -56,12 +56,13 @@ export function createCard(cardInfo, profileOwner) {
   cardImage.addEventListener('click', cardInfo.handleImageClick);
 
   const buttonDelete = cardElement.querySelector('.card__delete-button');
-  if (cardInfo.card.owner._id == profileOwner._id) {
+  if (cardInfo.card.owner._id === profileOwner._id) {
     buttonDelete.addEventListener('click', () =>
       cardInfo.deleteCard(cardInfo.card._id, cardElement)
     );
-  } 
+  } else {buttonDelete.remove()}
   
+
   const buttonLike = cardElement.querySelector('.card__like-button');
   buttonLike.addEventListener('click', () =>
     cardInfo.likeCard(cardInfo.card._id, buttonLike)
